@@ -1,5 +1,3 @@
-# cloudbuild.yaml
-
 options:
   logging: CLOUD_LOGGING_ONLY
 
@@ -7,11 +5,11 @@ steps:
   - name: 'ubuntu'
     id: 'List Files'
     entrypoint: 'bash'
-    args: ['-c', 'ls -lR && echo "--- terraform/ ---" && ls -l terraform']
-  # Terraform Format, Init, Validate
+    args: ['-c', 'ls -lR && echo "--- terraform/ ---" && ls -l infra-project/terraform']
+
   - name: 'hashicorp/terraform:1.6.6'
     id: 'Terraform Validate'
-    dir: terraform/
+    dir: infra-project/terraform
     entrypoint: 'sh'
     args:
       - '-c'
@@ -20,16 +18,14 @@ steps:
         terraform init
         terraform validate
 
-  # Terraform Plan (generates tfplan)
   - name: 'hashicorp/terraform:1.6.6'
     id: 'Terraform Plan'
-    dir: terraform
+    dir: infra-project/terraform
     args: ['plan', '-out=tfplan']
 
-  # Run OPA policy checks with Conftest
   - name: 'openpolicyagent/conftest'
     id: 'Policy Scan'
-    dir: terraform
+    dir: infra-project/terraform
     entrypoint: 'sh'
     args:
       - '-c'
@@ -37,10 +33,9 @@ steps:
         terraform show -json tfplan > tfplan.json
         conftest test tfplan.json --policy=../policies --input terraform_plan
 
-  # Terraform Apply (optional: gated with manual approval or substitution)
   - name: 'hashicorp/terraform:1.6.6'
     id: 'Terraform Apply'
-    dir: terraform
+    dir: infra-project/terraform
     args: ['apply', '-auto-approve', 'tfplan']
 
 timeout: 1200s
