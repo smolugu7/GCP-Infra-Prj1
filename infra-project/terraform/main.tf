@@ -61,7 +61,7 @@ resource "google_container_node_pool" "primary_nodes" {
 }
 
 resource "google_bigquery_dataset" "analytics" {
-  dataset_id = "${var.project_id}_dataset"
+  dataset_id = "dataset_uno"
   location   = var.region
 }
 
