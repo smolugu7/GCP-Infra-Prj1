@@ -2,12 +2,16 @@
 
 options:
   logging: CLOUD_LOGGING_ONLY
-  
+
 steps:
+  - name: 'ubuntu'
+    id: 'List Files'
+    entrypoint: 'bash'
+    args: ['-c', 'ls -lR && echo "--- terraform/ ---" && ls -l terraform']
   # Terraform Format, Init, Validate
   - name: 'hashicorp/terraform:1.6.6'
     id: 'Terraform Validate'
-    dir: terraform
+    dir: terraform/
     entrypoint: 'sh'
     args:
       - '-c'
