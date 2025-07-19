@@ -1,0 +1,38 @@
+# cloudbuild.yaml
+steps:
+  # Terraform Format, Init, Validate
+  - name: 'hashicorp/terraform:1.6.6'
+    id: 'Terraform Validate'
+    dir: terraform
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        terraform fmt -check -recursive
+        terraform init
+        terraform validate
+
+  # Terraform Plan (generates tfplan)
+  - name: 'hashicorp/terraform:1.6.6'
+    id: 'Terraform Plan'
+    dir: terraform
+    args: ['plan', '-out=tfplan']
+
+  # Run OPA policy checks with Conftest
+  - name: 'openpolicyagent/conftest'
+    id: 'Policy Scan'
+    dir: terraform
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        terraform show -json tfplan > tfplan.json
+        conftest test tfplan.json --policy=../policies --input terraform_plan
+
+  # Terraform Apply (optional: gated with manual approval or substitution)
+  - name: 'hashicorp/terraform:1.6.6'
+    id: 'Terraform Apply'
+    dir: terraform
+    args: ['apply', '-auto-approve', 'tfplan']
+
+timeout: 1200s
