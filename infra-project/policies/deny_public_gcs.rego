@@ -1,6 +1,6 @@
 package main
 
-deny[msg] {
+deny[msg] if {
   some i
   resource := input.resource_changes[i]
   resource.type == "google_storage_bucket"
@@ -8,7 +8,7 @@ deny[msg] {
   msg := "GCS bucket must have uniform bucket-level access enabled"
 }
 
-deny[msg] {
+deny[msg] if {
   some i
   resource := input.resource_changes[i]
   resource.type == "google_storage_bucket"
