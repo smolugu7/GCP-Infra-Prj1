@@ -61,6 +61,8 @@ deny contains msg if {
   msg := "Public access prevention must be explicitly enabled"
 }
 
+---
+
 🔻 Error 4: Policy fails even though public_access_prevention = "enforced" is set
 
 Cause:
