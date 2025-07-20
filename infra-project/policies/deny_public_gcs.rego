@@ -15,6 +15,6 @@ deny contains msg if {
   some i
   resource := input.resource_changes[i]
   resource.type == "google_storage_bucket"
-  not resource.change.after.iam_configuration.public_access_prevention
+  not resource.change.after.public_access_prevention
   msg := "Public access prevention must be explicitly enabled"
 }
