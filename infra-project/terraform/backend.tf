@@ -1,6 +1,9 @@
+provider "google" {  
+}
+
 terraform {
   backend "gcs" {
-    bucket     = "${var.project_id}-tf-state"
+    bucket     = "optimistic-tree-465716-j8-tf-state"
     prefix     = "terraform/project1/state"
   }
 }
