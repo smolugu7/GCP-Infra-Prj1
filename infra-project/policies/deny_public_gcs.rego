@@ -1,6 +1,9 @@
 package main
 
-deny[msg] if {
+import future.keywords.contains
+import future.keywords.if
+
+deny contains msg if {
   some i
   resource := input.resource_changes[i]
   resource.type == "google_storage_bucket"
@@ -8,7 +11,7 @@ deny[msg] if {
   msg := "GCS bucket must have uniform bucket-level access enabled"
 }
 
-deny[msg] if {
+deny contains msg if {
   some i
   resource := input.resource_changes[i]
   resource.type == "google_storage_bucket"
